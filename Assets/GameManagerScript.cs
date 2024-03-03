@@ -22,4 +22,20 @@ public class GameManagerScript : MonoBehaviour
     {
         informationText.text = "Player HP: " + playerHP + "\nEnemy HP: " + enemyHP;
     }
+
+    public void PlayerAttack()
+    {
+        Debug.Log("Player attacks!");
+        enemyHP -= 100;
+    }
+
+    public void PlayerDefend()
+    {
+        Debug.Log("Player defends!");
+    }
+
+    public void PlayerSkill()
+    {
+        Debug.Log("Player uses a skill!");
+    }
 }
