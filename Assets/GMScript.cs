@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class GameManagerScript : MonoBehaviour
+public class GMScript : MonoBehaviour
 {
     public int lastPlayerAttackDamage;
     public int playerHP;
@@ -20,7 +20,7 @@ public class GameManagerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        informationText.text = "Player HP: " + playerHP + "\nEnemy HP: " + enemyHP;
+        informationText.text = "Player HP: " + playerHP + "\nEnemy HP: " +enemyHP;
     }
 
     public void PlayerAttack()
