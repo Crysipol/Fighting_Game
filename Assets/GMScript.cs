@@ -7,33 +7,67 @@ using UnityEngine.UI;
 public class GMScript : MonoBehaviour
 {
     public int lastPlayerAttackDamage;
+
     public int playerHP;
     public int enemyHP;
+
     public TextMeshProUGUI informationText;
+    
     public bool hasGameEnded;
+
     public bool isPlayerTurn;
+
     public bool playerDefended;
     public bool skillAvailable;
+
     public Button attackButton;
     public Button defendButton;
     public Button skillButton;
+
+    public GameObject player;
+    public GameObject enemy;
+
+    public AudioSource hitsound;
 
     // Start is called before the first frame update
     void Start()
     {
         playerHP = 1000;
         enemyHP = 1000;
-        hasGameEnded = false;
+       
         isPlayerTurn = true;
+
+        player = GameObject.Find("Player");
+        enemy = GameObject.Find("Enemy");
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (hasGameEnded == true)
+        {
+            attackButton.interactable = false;
+            defendButton.interactable = false;
+            skillButton.interactable = false;
+        }
+        
         if (hasGameEnded == false)
         {
             informationText.text = "Player HP: " + playerHP + "\nEnemy HP: " +enemyHP;
+            
+            if (playerHP <= 0)
+            {
+                Destroy(player);
+                informationText.text = "You lose...";
+                hasGameEnded = true;
+            }
+
+            else if (enemyHP <= 0)
+            {
+                Destroy(enemy);
+                informationText.text = "You win!";
+                hasGameEnded = true;
+            }
             
             if (isPlayerTurn == true)
             {
@@ -56,19 +90,22 @@ public class GMScript : MonoBehaviour
             else if (isPlayerTurn == false)
             {
                 Debug.Log("Enemy's turn!");
+
                 attackButton.interactable = false;
                 defendButton.interactable = false;
                 skillButton.interactable = false;
-                EnemyAttack();
+
+                EnemyAttack(Random.Range(150, 301),Random.Range(1, 5));
             }
         }
     }
 
     public void PlayerAttack()
     {
-        Debug.Log("Player attacks!");
-        lastPlayerAttackDamage = Random.Range(150,301);
+        lastPlayerAttackDamage = Random.Range(200,301);
+        hitsound.Play();
         enemyHP -= lastPlayerAttackDamage;
+        Debug.Log("Player attacks!");
 
         isPlayerTurn = false;
     }
@@ -76,8 +113,8 @@ public class GMScript : MonoBehaviour
     public void PlayerDefend()
     {
         Debug.Log("Player defends!");
-        skillAvailable = true;
         playerDefended = true;
+        skillAvailable = true;
         isPlayerTurn = false;
     }
 
@@ -85,24 +122,31 @@ public class GMScript : MonoBehaviour
     {
         Debug.Log("Player uses a skill!");
         lastPlayerAttackDamage = Random.Range(300,501);
+        hitsound.Play();
         enemyHP -= lastPlayerAttackDamage;
         skillAvailable = false;
         isPlayerTurn = false;
     }
 
-    public void EnemyAttack()
+    public void EnemyAttack(int damage, int criticalCheck)
     {
-        if (playerDefended == false)
+        Debug.Log("Enemy attacks!");
+
+        if (criticalCheck == 4)
         {
-            playerHP -= Random.Range(150,301);
+            damage *= 2;
+            Debug.Log("The enemy swings a powerful blow!");
+        }
+
+        if (playerDefended == true)
+        {
+            playerHP -= damage / 2;
         }
         
-        else if (playerDefended == true)
+        else if (playerDefended == false)
         {
-            playerHP -= Random.Range(50,101);
-            playerDefended = false;
+            playerHP -= damage;
         }
-        
-        is PlayerTurn = true;
+        isPlayerTurn = true;
     }
 }
